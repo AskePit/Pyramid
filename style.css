@@ -50,6 +50,7 @@ body {
     text-align: center;
     position: relative;
 	display: inline-block;
+    pointer-events: none;
 }
 
 .result_label {
