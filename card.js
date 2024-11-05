@@ -279,6 +279,9 @@ function Deck(setType, deckCount) {
     }
 }
 
+function isPortrait() {
+    return window.innerHeight > window.innerWidth;
+}
 
 function Pyramid(deck, stepFunc) {	
     this.cards = [];

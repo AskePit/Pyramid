@@ -64,3 +64,7 @@ var pyramid = new Pyramid(deck, pyramidStep);
 deck.open();
 deck.render('deck');
 pyramid.render('pyramid');
+
+window.onresize = () => {
+	pyramid.render('pyramid');
+}

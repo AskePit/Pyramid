@@ -10,12 +10,12 @@
 }
 
 body {
-    margin: 0 auto;
+    margin: 0 0;
+    padding: 0 0;
     background-color: #154247;
     text-align: center;
 	line-height: 0;
 }
-
 
 .card-space {
     --card-ratio: calc(800.0/1267.0);
@@ -27,6 +27,20 @@ body {
 	
     position: relative;
     display: inline-block;
+}
+
+@media (orientation: landscape) {
+    .card-space {
+        --card-height: 23.5vh;
+        --card-width: calc(var(--card-height) * var(--card-ratio));
+    }
+}
+
+@media (orientation: portrait) {
+    .card-space {
+        --card-height: calc(var(--card-width) / var(--card-ratio));
+        --card-width: 14vw;
+    }
 }
 
 .card {
@@ -46,7 +60,7 @@ body {
 }
 
 #pyramid{
-    margin-top: 3vh;
+    margin: 3vh 0;
     text-align: center;
     position: relative;
 	display: inline-block;
