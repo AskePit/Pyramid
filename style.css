@@ -49,6 +49,7 @@ body {
     border-radius: 1vh;
 	border: 1px solid #555;
     box-shadow: 1px -1px 3px rgba(0, 0, 0, 1);
+    pointer-events: auto;
 }
 
 #deck {
