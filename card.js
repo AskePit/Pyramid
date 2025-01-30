@@ -23,7 +23,7 @@ var Rank = {
 	No: 'No'
 }
 
-function pyramidRankValue(card) {
+function rankValue(card) {
 	switch(card.rank) {
 		case Rank.Ace: return 1;
         case Rank.Two: return 2;
@@ -38,12 +38,13 @@ function pyramidRankValue(card) {
         case Rank.Jack: return 11;
         case Rank.Queen: return 12;
         case Rank.King: return 13;
+        default: return 0;
     }
 }
 
 function pyramidMatch(card, deckCard) {
-	cardVal = pyramidRankValue(card);
-	deckCardVal = pyramidRankValue(deckCard);
+	cardVal = rankValue(card);
+	deckCardVal = rankValue(deckCard);
 	
 	return Math.abs(cardVal-deckCardVal)%11 == 1;
 }
@@ -305,9 +306,11 @@ function Pyramid(deck, stepFunc) {
 	}
 	
     this.render = function(viewId) {
-        var view = document.getElementById(viewId);
-        while(view.firstChild) {
-            view.removeChild(view.firstChild);
+        let rows = document.getElementsByClassName('row')
+        for(let row of rows) {
+            while(row.firstChild) {
+                row.removeChild(row.firstChild);
+            }
         }
 
         for(var row = 0; row<this.levels; ++row) {
@@ -324,17 +327,14 @@ function Pyramid(deck, stepFunc) {
 					cardView.setAttribute('class', 'card-space card');
 					cardView.style.backgroundImage = getCardUrl(card);
                     cardView.style.backgroundRepeat = 'no-repeat';
-                    cardView.style.transform = 'translateY(-' + 11.9*row + 'vh)';
 				}
 								
 				(function(_cardView, _card, _deck, _pyramid){
 					cardView.onclick = function () { stepFunc(_cardView, _card, _deck, _pyramid) };
 				})(cardView, card, deck, this);
 				
-				view.appendChild(cardView);
+				rows[row].appendChild(cardView);
 			}
-			
-			view.appendChild(document.createElement('br'));
         }
     }
 	
