@@ -5,7 +5,7 @@ function pyramidStep(cardView, card, deck, pyramid) {
 	
 	if(!pyramidMatch(card, deck.last())) return;
 	
-	var newCard = new Card(card.rank, card.suit, true);
+	const newCard = new Card(card.rank, card.suit, true);
 	deck.cards.push(newCard);
 	card.reset();
 	++pyramid.ballast;
@@ -25,7 +25,7 @@ function deckStep(deck, pyramid) {
 		return;
 	}
 	
-	for(var i = 0; i<pyramid.ballast; ++i) {
+	for(let i = 0; i<pyramid.ballast; ++i) {
 		deck.cards.pop();
 	}
 	
@@ -49,17 +49,17 @@ function finish(win) {
 	infoLabel.style.visibility = 'visible';
 }
 
-var deckView = document.getElementById('deck');
-var infoLabel = document.getElementById('info');
+const deckView = document.getElementById('deck');
+const infoLabel = document.getElementById('info');
 
 deckView.onclick = function() {
 	deckStep(deck, pyramid);
 }
 
-var deck = new Deck(SetType.Set52, 1);
+const deck = new Deck(SetType.Set52, 1);
 deck.shuffle();
 
-var pyramid = new Pyramid(deck, pyramidStep);
+const pyramid = new Pyramid(deck, pyramidStep);
 
 deck.open();
 deck.render('deck');

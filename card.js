@@ -1,4 +1,4 @@
-var Suit = {
+const Suit = {
     Spades: 'S',
     Hearts: 'H',
     Clubs: 'C',
@@ -6,7 +6,7 @@ var Suit = {
 	No: 'No',
 }
 
-var Rank = {
+const Rank = {
     Two: '2',
     Three: '3',
     Four: '4',
@@ -43,27 +43,27 @@ function rankValue(card) {
 }
 
 function pyramidMatch(card, deckCard) {
-	cardVal = rankValue(card);
-	deckCardVal = rankValue(deckCard);
+	const cardVal = rankValue(card);
+	const deckCardVal = rankValue(deckCard);
 	
-	return Math.abs(cardVal-deckCardVal)%11 == 1;
+	return Math.abs(cardVal - deckCardVal) % 11 == 1;
 }
 
-var SetType = {
+const SetType = {
     Set52: 52,
     Set36: 36,
     Set32: 32,
     Set24: 24
 }
 
-var SuitSet = [
+const SuitSet = [
     Suit.Spades,
     Suit.Hearts,
     Suit.Clubs,
     Suit.Diamonds,
 ];
 
-var RankSet_52 = [
+const RankSet_52 = [
     Rank.Two,
     Rank.Three,
     Rank.Four,
@@ -79,7 +79,7 @@ var RankSet_52 = [
     Rank.Ace,
 ];
 
-var RankSet_36 = [
+const RankSet_36 = [
     Rank.Six,
     Rank.Seven,
     Rank.Eight,
@@ -91,7 +91,7 @@ var RankSet_36 = [
     Rank.Ace,
 ];
 
-var RankSet_32 = [
+const RankSet_32 = [
     Rank.Seven,
     Rank.Eight,
     Rank.Nine,
@@ -102,7 +102,7 @@ var RankSet_32 = [
     Rank.Ace,
 ];
 
-var RankSet_24 = [
+const RankSet_24 = [
     Rank.Nine,
     Rank.Ten,
     Rank.Jack,
@@ -112,7 +112,7 @@ var RankSet_24 = [
 ];
 
 function getRandSuit() {
-    var r = Math.floor(Math.random()*3);
+    const r = Math.floor(Math.random() * 3);
     switch(r) {
         case 0: return Suit.Spades;
         case 1: return Suit.Hearts;
@@ -122,7 +122,7 @@ function getRandSuit() {
 }
 
 function getRandRank() {
-    var r = Math.floor(Math.random()*13);
+    const r = Math.floor(Math.random() * 13);
     switch(r) {
         case 0: return Rank.Two;
         case 1: return Rank.Three;
@@ -140,45 +140,41 @@ function getRandRank() {
     }
 }
 
-function RandCard() {
-    this.rank = getRandRank();
-    this.suit = getRandSuit();
-    this.opened = Math.random() >= 0.5;
-}
+class Card {
+    constructor(rank, suit, opened) {
+        this.rank = rank;
+        this.suit = suit;
+        this.opened = opened;
+    }
 
-function Card(rank, suit, opened) {
-    this.rank = rank;
-    this.suit = suit;
-    this.opened = opened;
-
-    this.open = function() {
+    open() {
         this.opened = true;
-    }
+    };
 
-    this.close = function() {
+    close() {
         this.opened = false;
-    }
-	
-	this.toggle = function() {
-		this.opened = !this.opened;
-	}
-	
-	this.isEmpty = function() {
-		return this.rank == Rank.No || this.suit == Suit.No;
-	}
-	
-	this.reset = function() {
-		this.rank = Rank.No;
-		this.suit = Suit.No;
-	}
+    };
+
+    toggle() {
+        this.opened = !this.opened;
+    };
+
+    isEmpty() {
+        return this.rank == Rank.No || this.suit == Suit.No;
+    };
+
+    reset() {
+        this.rank = Rank.No;
+        this.suit = Suit.No;
+    };
 }
 
 function getCardPath(card) {
-    var url;
+    let url;
 	if(card.isEmpty()) {
 		url = '';
 	} else if (card.opened) {
-        let ext = '.svg'
+        const ext = '.svg'
         url = 'cards/' + card.rank + card.suit + ext;
     } else {
         url = 'cards/shirt.svg';
@@ -187,11 +183,11 @@ function getCardPath(card) {
 }
 
 function getCardUrl(card) {
-    var url;
+    let url;
 	if(card.isEmpty()) {
 		url = '';
 	} else if (card.opened) {
-        let ext = '.svg'
+        const ext = '.svg'
         url = 'url("cards/' + card.rank + card.suit + ext + '")';
     } else {
         url = 'url("cards/shirt.svg")';
@@ -200,172 +196,159 @@ function getCardUrl(card) {
 }
 
 function preloadImage(im_url) {
-    let img = new Image();
+    const img = new Image();
     img.src = im_url;
 }
 
-function Deck(setType, deckCount) {
-    this.cards = [];
+class Deck {
+    constructor(setType, deckCount) {
+        this.cards = [];
 
-    this.shuffle = function() {
-        var cards = this.cards;
-        var j, x, i;
-        for (i = cards.length; i; --i) {
-            j = Math.floor(Math.random() * i);
-            x = cards[i - 1];
-            cards[i - 1] = cards[j];
-            cards[j] = x;
+        let rankSet;
+        switch (setType) {
+            case SetType.Set52: rankSet = RankSet_52; break;
+            case SetType.Set36: rankSet = RankSet_36; break;
+            case SetType.Set32: rankSet = RankSet_32; break;
+            case SetType.Set24: rankSet = RankSet_24; break;
         }
-    }
-	
-	this.open = function() {
-		for(var i = 0; i<this.cards.length; ++i) {
-			this.cards[i].open();
-		}
-	}
-	
-	this.isEmpty = function() {
-		return this.cards.length < 1;
-	}
 
-    var rankSet;
-    switch(setType) {
-        case SetType.Set52: rankSet = RankSet_52; break;
-        case SetType.Set36: rankSet = RankSet_36; break;
-        case SetType.Set32: rankSet = RankSet_32; break;
-        case SetType.Set24: rankSet = RankSet_24; break; 
-    }
+        for (let d = 0; d < deckCount; ++d) {
+            for (let s = 0; s < SuitSet.length; ++s) {
+                for (let r = 0; r < rankSet.length; ++r) {
+                    const c = new Card(rankSet[r], SuitSet[s], false);
+                    this.cards.push(c);
 
-    for(var d = 0; d<deckCount; ++d) {
-        for (var s = 0; s<SuitSet.length; ++s) {
-            for (var r = 0; r<rankSet.length; ++r) {
-                var c = new Card(rankSet[r], SuitSet[s], false);
-                this.cards.push(c);
-
-                preloadImage(getCardPath(new Card(rankSet[r], SuitSet[s], true)));
+                    preloadImage(getCardPath(new Card(rankSet[r], SuitSet[s], true)));
+                }
             }
         }
     }
-	
-	this.last = function() {
-		return this.cards[this.cards.length-1];
-	}
-	
-	this.render = function(viewId) {
-        var view = document.getElementById(viewId);
-		
-		if(this.isEmpty()) {
-			view.style.backgroundImage = getCardUrl(new Card(Rank.No, Suit.No, true));
+
+    shuffle() {
+        const cards = this.cards;
+        for (let i = cards.length; i; --i) {
+            const j = Math.floor(Math.random() * i);
+            const x = cards[i - 1];
+            cards[i - 1] = cards[j];
+            cards[j] = x;
+        }
+    };
+
+    open() {
+        for (let i = 0; i < this.cards.length; ++i) {
+            this.cards[i].open();
+        }
+    };
+
+    isEmpty() {
+        return this.cards.length < 1;
+    };
+
+    last() {
+        return this.cards[this.cards.length - 1];
+    };
+
+    render(viewId) {
+        const view = document.getElementById(viewId);
+
+        if (this.isEmpty()) {
+            view.style.backgroundImage = getCardUrl(new Card(Rank.No, Suit.No, true));
             view.style.backgroundRepeat = 'no-repeat';
-			return;
-		}
+            return;
+        }
 
-		var c = this.last();
-		view.style.backgroundImage = getCardUrl(c);
+        const c = this.last();
+        view.style.backgroundImage = getCardUrl(c);
         view.style.backgroundRepeat = 'no-repeat';
-		
-		var shadow = '';
-		var cardsCount = this.cards.length;
-		var x = cardsCount%2; // to make same color sequence for stacked shadows
-		
-		for(var i = 0; i<cardsCount; ++i) {
-			var color = (i+x)%2 ? '#777' : '#e9e5b8';
-			var delim = i == cardsCount-1 ? '' : ',';
-			
-			shadow += '-' + i + 'px -' + i + 'px ' + color + delim;
-		}
-		
-		view.style.boxShadow = shadow;
-		view.style.transform = 'translate(' + cardsCount + 'px, ' + cardsCount + 'px)';
+
+        let shadow = '';
+        const cardsCount = this.cards.length;
+        const x = cardsCount % 2; // to make same color sequence for stacked shadows
+
+        for (let i = 0; i < cardsCount; ++i) {
+            let color = (i + x) % 2 ? '#777' : '#e9e5b8';
+            let delim = i == cardsCount - 1 ? '' : ',';
+
+            shadow += '-' + i + 'px -' + i + 'px ' + color + delim;
+        }
+
+        view.style.boxShadow = shadow;
+        view.style.transform = 'translate(' + cardsCount + 'px, ' + cardsCount + 'px)';
+    };
+}
+
+class Pyramid {
+    constructor(deck, stepFunc) {
+        this.cards = [];
+        this.levels = 7;
+        this.stepFunc = stepFunc
+
+        for (let i = 0; i < this.levels; ++i) {
+            this.cards[i] = [];
+        }
+
+        this.ballast = 1;
+
+        for (let row = 0; row < this.levels; ++row) {
+            for (let col = 0; col < row + 1; ++col) {
+                const c = deck.cards.pop();
+                this.cards[row].push(c);
+            }
+        }
+
+        for (let i = 0; i < this.levels; ++i) {
+            this.cards[this.levels - 1][i].open();
+        }
     }
-}
 
-function isPortrait() {
-    return window.innerHeight > window.innerWidth;
-}
-
-function Pyramid(deck, stepFunc) {	
-    this.cards = [];
-	this.levels = 7;
-	
-	for (var i = 0; i<this.levels; ++i) {
-		this.cards[i] = [];
-	}
-	
-	this.ballast = 1;
-
-    for(var row = 0; row<this.levels; ++row) {
-		for(var col = 0; col<row+1; ++col) {
-			var c = deck.cards.pop();			
-			this.cards[row].push(c);
-		}
-	}
-	
-	for(var i = 0; i<this.levels; ++i) {
-		this.cards[this.levels-1][i].open();
-	}
-	
-    this.render = function(viewId) {
-        let rows = document.getElementsByClassName('row')
-        for(let row of rows) {
-            while(row.firstChild) {
+    render(viewId) {
+        const rows = document.getElementsByClassName('row');
+        for (const row of rows) {
+            while (row.firstChild) {
                 row.removeChild(row.firstChild);
             }
         }
 
-        for(var row = 0; row<this.levels; ++row) {
-			var cols = this.cards[row].length;
-			for(var col = 0; col<cols; ++col) {
-			
-				var cardView = document.createElement('div');
-				var card = this.cards[row][col];
-				
-				var cardUrl = getCardUrl(card);
-				if(cardUrl == '') {
-					cardView.setAttribute('class', 'card-space no-card');
-				} else {
-					cardView.setAttribute('class', 'card-space card');
-					cardView.style.backgroundImage = getCardUrl(card);
+        for (let row = 0; row < this.levels; ++row) {
+            const cols = this.cards[row].length;
+            for (let col = 0; col < cols; ++col) {
+
+                const cardView = document.createElement('div');
+                const card = this.cards[row][col];
+
+                const cardUrl = getCardUrl(card);
+                if (cardUrl == '') {
+                    cardView.setAttribute('class', 'card-space no-card');
+                } else {
+                    cardView.setAttribute('class', 'card-space card');
+                    cardView.style.backgroundImage = getCardUrl(card);
                     cardView.style.backgroundRepeat = 'no-repeat';
-				}
-								
-				(function(_cardView, _card, _deck, _pyramid){
-					cardView.onclick = function () { stepFunc(_cardView, _card, _deck, _pyramid) };
-				})(cardView, card, deck, this);
-				
-				rows[row].appendChild(cardView);
-			}
+                }
+
+                (function (_cardView, _card, _deck, _pyramid, _stepFunc) {
+                    cardView.onclick = function () { _stepFunc(_cardView, _card, _deck, _pyramid); };
+                })(cardView, card, deck, this, this.stepFunc);
+
+                rows[row].appendChild(cardView);
+            }
         }
-    }
-	
-	this.recalc = function() {
-		var rows = this.levels-1;
-        for(var row = 0; row<rows; ++row) {
-			var cols = this.cards[row].length;
-			for(var col = 0; col<cols; ++col) {
-				var card = this.cards[row][col];
-				if(card.opened) continue;
-				if(this.cards[row+1][col].isEmpty() && this.cards[row+1][col+1].isEmpty()) {
-					card.open();
-				}
-			}
-		}
-	}
-	
-	this.isEmpty = function() {
-		/*var count = 0;
-		var rows = this.cards.length-1;
-        for(var row = 0; row<rows; ++row) {
-			var cols = this.cards[row].length;
-			for(var col = 0; col<cols; ++col) {
-				var card = this.cards[row][col];
-				if(!card.isEmpty()) {
-					++count;
-				}
-			}
-		}
-		
-		return !count;*/
-		return this.cards[0][0].isEmpty();
-	}
+    };
+
+    recalc() {
+        const rows = this.levels - 1;
+        for (let row = 0; row < rows; ++row) {
+            const cols = this.cards[row].length;
+            for (let col = 0; col < cols; ++col) {
+                const card = this.cards[row][col];
+                if (card.opened) continue;
+                if (this.cards[row + 1][col].isEmpty() && this.cards[row + 1][col + 1].isEmpty()) {
+                    card.open();
+                }
+            }
+        }
+    };
+
+    isEmpty() {
+        return this.cards[0][0].isEmpty();
+    };
 }
